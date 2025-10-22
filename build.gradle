@@ -48,5 +48,4 @@ run{
     // Enable assertions for development
     jvmArgs '-enableassertions', '-ea'
     standardInput = System.in
-    enableAssertions = true
 }
