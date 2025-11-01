@@ -28,7 +28,7 @@ public class Parser {
     private static final String ADD_QUOTE_COMMAND_PATTERN = "^n/(.+?)\\s+c/(.+)$";
     private static final String QUOTENAME_ARG_PATTERN = "^n/(.+)$";
     private static final String EXPORT_QUOTENAME_ARG_PATTERN = "^n/([^f]+?)(?=\\sf/|$)";
-    private static final String FILENAME_ARG_PATTERN = "^f/(.+)$";
+    private static final String FILENAME_ARG_PATTERN = "f/(.+)$";
     private static final String REGISTER_COMMAND_PATTERN = "^c/(.+)$";
     private static final String ADD_ITEM_COMMAND_PATTERN
             = "^i/(.+?)(?:\\s+n/(.+?))?\\s+p/(.+?)\\s+q/(.+?)(?:\\s+t/(.+))?$";
@@ -213,7 +213,7 @@ public class Parser {
         try {
             Quote quote = getQuoteFromStateAndName(quoteName, state, quoteList);
             String filename = quote.getQuoteName();
-            if (fileMatcher.find()) {
+            if (fileMatcher.find() && fileMatcher.group(1).trim().length() > 0) {
                 filename = fileMatcher.group(1).trim();
             }
             // remove any extension if user included it
