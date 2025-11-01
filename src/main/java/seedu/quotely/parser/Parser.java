@@ -25,14 +25,14 @@ import seedu.quotely.util.LoggerConfig;
 public class Parser {
     private static final Logger logger = LoggerConfig.getLogger(Parser.class);
 
-    private static final String ADD_QUOTE_COMMAND_PATTERN = "n/(.+?)\\s+c/(.+)$";
-    private static final String QUOTENAME_ARG_PATTERN = "n/(.+)$";
-    private static final String EXPORT_QUOTENAME_ARG_PATTERN = "n/([^f]+?)(?=\\sf/|$)";
+    private static final String ADD_QUOTE_COMMAND_PATTERN = "^n/(.+?)\\s+c/(.+)$";
+    private static final String QUOTENAME_ARG_PATTERN = "^n/(.+)$";
+    private static final String EXPORT_QUOTENAME_ARG_PATTERN = "^n/([^f]+?)(?=\\sf/|$)";
     private static final String FILENAME_ARG_PATTERN = "f/(.+)$";
-    private static final String REGISTER_COMMAND_PATTERN = "c/(.+)$";
+    private static final String REGISTER_COMMAND_PATTERN = "^c/(.+)$";
     private static final String ADD_ITEM_COMMAND_PATTERN
             = "^i/(.+?)(?:\\s+n/(.+?))?\\s+p/(.+?)\\s+q/(.+?)(?:\\s+t/(.+))?$";
-    private static final String DELETE_ITEM_COMMAND_PATTERN = "i/(.+?)(?:\s+n/(.+))?$";
+    private static final String DELETE_ITEM_COMMAND_PATTERN = "^i/(.+?)(?:\s+n/(.+))?$";
 
     // command keywords
     private static final String ADD_QUOTE_COMMAND_KEYWORD = "quote";
@@ -67,12 +67,13 @@ public class Parser {
          * edit parse method to allow command input depending on isInsideState
          * add exception handling in parser
          */
+        fullCommand = fullCommand.trim();
         String command = fullCommand.split(" ")[0];
         logger.fine("Extracted command: '" + command + "'");
 
         String arguments = "";
         if (fullCommand.split(" ").length > 1) {
-            arguments = fullCommand.split(" ", 2)[1];
+            arguments = fullCommand.split(" ", 2)[1].trim();
             logger.fine("Extracted arguments: '" + arguments + "'");
         }
         switch (command) {
@@ -80,7 +81,7 @@ public class Parser {
             // available in all state
             return parseRegisterCommand(arguments);
         case ADD_QUOTE_COMMAND_KEYWORD:
-            // main menu only
+            // available in all state
             return parseAddQuoteCommand(arguments, state);
         case DELETE_QUOTE_COMMAND_KEYWORD:
             // can use no quote name if inside a quote
@@ -120,10 +121,6 @@ public class Parser {
     private static Command parseAddQuoteCommand(String arguments, QuotelyState state)
             throws QuotelyException {
         logger.fine("parseAddQuoteCommand called with arguments: " + arguments);
-        if (state.isInsideQuote()) {
-            logger.warning("Attempted to add quote while inside a quote");
-            throw new QuotelyException(QuotelyException.ErrorType.INVALID_STATE);
-        }
         Pattern p = Pattern.compile(ADD_QUOTE_COMMAND_PATTERN);
         Matcher m = p.matcher(arguments);
 
@@ -156,7 +153,7 @@ public class Parser {
 
         String targetQuoteName = null;
         if (m.find()) {
-            targetQuoteName = m.group(1);
+            targetQuoteName = m.group(1).trim();
         } else {
             logger.warning("Failed to navigate to target with name: " + targetQuoteName);
             throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT, "nav main OR nav n/QUOTE_NAME");
@@ -168,8 +165,12 @@ public class Parser {
             return new NavigateCommand(targetQuote);
         } catch (QuotelyException e) {
             logger.warning("Failed to navigate to target with name: " + targetQuoteName);
-            throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT,
+            if (targetQuoteName != null) {
+                throw new QuotelyException(QuotelyException.ErrorType.QUOTE_NOT_FOUND);
+            } else {
+                throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT,
                     "nav main OR nav n/QUOTE_NAME");
+            }
         }
     }
 
@@ -189,7 +190,11 @@ public class Parser {
             return new DeleteQuoteCommand(quote);
         } catch (QuotelyException e) {
             logger.warning("Failed to find quote for deletion with name: " + quoteName);
-            throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT, "unquote [n/QUOTE_NAME]");
+            if (quoteName != null) {
+                throw new QuotelyException(QuotelyException.ErrorType.QUOTE_NOT_FOUND);
+            } else {
+                throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT, "unquote [n/QUOTE_NAME]");
+            }
         }
     }
 
@@ -208,7 +213,7 @@ public class Parser {
         try {
             Quote quote = getQuoteFromStateAndName(quoteName, state, quoteList);
             String filename = quote.getQuoteName();
-            if (fileMatcher.find()) {
+            if (fileMatcher.find() && fileMatcher.group(1).trim().length() > 0) {
                 filename = fileMatcher.group(1).trim();
             }
             // remove any extension if user included it
@@ -219,8 +224,12 @@ public class Parser {
             return new seedu.quotely.command.ExportQuoteCommand(quote, filename);
         } catch (QuotelyException e) {
             logger.warning("Failed to find quote for export with name: " + quoteName);
-            throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT,
+            if (quoteName != null) {
+                throw new QuotelyException(QuotelyException.ErrorType.QUOTE_NOT_FOUND);
+            } else {
+                throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT,
                     "export [n/QUOTE_NAME] [f/FILENAME]");
+            }
         }
     }
 
@@ -250,10 +259,6 @@ public class Parser {
         if (m.find()) {
             String itemName = m.group(1).trim();
             String quoteName = m.group(2) != null ? m.group(2).trim() : null;
-            if (state.isInsideQuote() && quoteName != null) {
-                logger.warning("Attempted to use n/QUOTE_NAME while inside a quote");
-                throw new QuotelyException(QuotelyException.ErrorType.INVALID_STATE);
-            }
             String priceStr = m.group(3).trim();
             String quantityStr = m.group(4).trim();
             String taxRateStr = m.group(5) != null ? m.group(5).trim() : null;
@@ -265,8 +270,23 @@ public class Parser {
 
             double price;
             int quantity;
-            double taxRate;
+            double taxRate = 0;
+            Quote quote;
 
+            // extract quote from quoteName or state
+            try {
+                quote = getQuoteFromStateAndName(quoteName, state, quoteList);
+            } catch (QuotelyException e) {
+                logger.warning("Failed to find quote name:" + quoteName + " for adding item");
+                if (quoteName != null) {
+                    throw new QuotelyException(QuotelyException.ErrorType.QUOTE_NOT_FOUND);
+                } else {
+                    throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT,
+                            "add i/ITEM_NAME [n/QUOTE_NAME] p/PRICE q/QUANTITY [t/TAX_RATE]");
+                }
+            }
+
+            // parse price
             try {
                 price = Double.parseDouble(priceStr);
                 if (price < 0) {
@@ -277,6 +297,7 @@ public class Parser {
                 throw new QuotelyException(QuotelyException.ErrorType.INVALID_NUMBER_FORMAT);
             }
 
+            // parse quantity
             try {
                 quantity = Integer.parseInt(quantityStr);
                 if (quantity <= 0) {
@@ -286,7 +307,8 @@ public class Parser {
                 logger.warning("Failed to parse quantity: " + e.getMessage());
                 throw new QuotelyException(QuotelyException.ErrorType.INVALID_NUMBER_FORMAT);
             }
-            taxRate = 0;
+
+            // parse tax rate if provided
             if (taxRateStr != null) {
                 try {
                     taxRate = Double.parseDouble(taxRateStr);
@@ -299,12 +321,9 @@ public class Parser {
                 }
             }
 
-            Quote quote = getQuoteFromStateAndName(quoteName, state, quoteList);
             logger.info("Successfully parsed add item command - Item: '" +
                     itemName + "' Price: " + price + " Quantity: " + quantity +
                     " Tax Rate: " + taxRate + " for quote: '" + quote.getQuoteName() + "'");
-
-            // parsing and UI for hasTax to be implemented
 
             return new AddItemCommand(itemName, quote, price, quantity, taxRate);
         } else {
@@ -323,11 +342,18 @@ public class Parser {
         if (m.find()) {
             String itemName = m.group(1).trim();
             String quoteName = m.group(2) != null ? m.group(2).trim() : null;
-            if (state.isInsideQuote() && quoteName != null) {
-                logger.warning("Attempted to use n/QUOTE_NAME while inside a quote");
-                throw new QuotelyException(QuotelyException.ErrorType.INVALID_STATE);
+            Quote quote;
+            try {
+                quote = getQuoteFromStateAndName(quoteName, state, quoteList);
+            } catch (QuotelyException e) {
+                logger.warning("Failed to find quote name:" + quoteName + " for deleting item");
+                if (quoteName != null) {
+                    throw new QuotelyException(QuotelyException.ErrorType.QUOTE_NOT_FOUND);
+                } else {
+                    throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT,
+                            "delete i/ITEM_NAME [n/QUOTE_NAME]");
+                }
             }
-            Quote quote = getQuoteFromStateAndName(quoteName, state, quoteList);
             if (!quote.hasItem(itemName)) {
                 logger.warning("Item not found in quote - Item: '" + itemName +
                         "', Quote: '" + quote.getQuoteName() + "'");
@@ -358,9 +384,12 @@ public class Parser {
             return new CalculateTotalCommand(quote);
         } catch (QuotelyException e) {
             logger.warning("Invalid format for calculate total command: " + arguments);
-            throw new QuotelyException(
-                    QuotelyException.ErrorType.WRONG_COMMAND_FORMAT,
-                    "total [n/QUOTE_NAME]");
+            if (quoteName != null) {
+                throw new QuotelyException(QuotelyException.ErrorType.QUOTE_NOT_FOUND);
+            } else {
+                throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT,
+                        "total [n/QUOTE_NAME]");
+            }
         }
     }
 

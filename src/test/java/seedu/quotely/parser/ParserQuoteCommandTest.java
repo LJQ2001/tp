@@ -78,17 +78,6 @@ public class ParserQuoteCommandTest {
     }
 
     @Test
-    public void parseAddQuoteCommand_insideQuote_throwException() {
-        QuoteList quoteList = new QuoteList();
-        QuotelyState state = QuotelyState.getInstance();
-        Quote q = new Quote("quote name", "customer name");
-        state.setInsideQuote(q);
-        assertThrows(QuotelyException.class, () -> {
-            Parser.parse("quote n/Quote Name c/Customer Name", state, quoteList);
-        });
-    }
-
-    @Test
     public void parseDeleteQuoteCommand_validInputOutsideQuote_returnDeleteQuoteCommand() {
         QuotelyState state = QuotelyState.getInstance();
         state.setOutsideQuote();
@@ -194,6 +183,36 @@ public class ParserQuoteCommandTest {
         quoteList.addQuote(q);
         try {
             Command command = Parser.parse("nav n/quote 1", state, quoteList);
+            assertTrue(command instanceof NavigateCommand);
+        } catch (Exception e) {
+            assert false : "Exception should not be thrown";
+        }
+    }
+
+    @Test
+    public void parseNavCommand_leadingSpace_returnNavCommand() {
+        QuotelyState state = QuotelyState.getInstance();
+        QuoteList quoteList = new QuoteList();
+        Quote q = new Quote("quote 1", "customer 1");
+        state.setOutsideQuote();
+        quoteList.addQuote(q);
+        try {
+            Command command = Parser.parse("    nav   n/quote 1", state, quoteList);
+            assertTrue(command instanceof NavigateCommand);
+        } catch (Exception e) {
+            assert false : "Exception should not be thrown";
+        }
+    }
+
+    @Test
+    public void parseNavCommand_spaceBeforeQuote_returnNavCommand() {
+        QuotelyState state = QuotelyState.getInstance();
+        QuoteList quoteList = new QuoteList();
+        Quote q = new Quote("quote 1", "customer 1");
+        state.setOutsideQuote();
+        quoteList.addQuote(q);
+        try {
+            Command command = Parser.parse("    nav   n/     quote 1", state, quoteList);
             assertTrue(command instanceof NavigateCommand);
         } catch (Exception e) {
             assert false : "Exception should not be thrown";
