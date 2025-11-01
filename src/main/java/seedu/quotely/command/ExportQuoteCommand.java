@@ -30,7 +30,6 @@ public class ExportQuoteCommand extends Command {
                         QuotelyState state) throws QuotelyException {
 
         logger.fine(String.format("Executing ExportQuoteCommand of quote %s to %s", quote.getQuoteName(), filename));
-        ui.showMessage("Exporting quote: " + quote.getQuoteName() + " to " + filename + ".pdf");
         PDFWriter pdfWriter = PDFWriter.getInstance();
         pdfWriter.writeQuoteToPDF(quote, companyName, filename);
         logger.fine(String.format("Successfully export quote: %s to %s.pdf", quote.getQuoteName(), filename));

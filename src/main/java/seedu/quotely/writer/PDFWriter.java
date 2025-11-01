@@ -18,6 +18,7 @@ import java.awt.Color;
 import seedu.quotely.data.CompanyName;
 import seedu.quotely.data.Quote;
 import seedu.quotely.data.Item;
+import seedu.quotely.ui.Ui;
 
 public class PDFWriter {
     private static PDFWriter writer = null;
@@ -32,12 +33,34 @@ public class PDFWriter {
         return writer;
     }
 
+    public String getSecureFilename(String filename) {
+        String sanitizedFilename = filename.
+            replace("/", "_").
+            replace("\\", "_").
+            replace(".", "_").
+            replace("..", "_");
+        if (sanitizedFilename.length() > 255) {
+            sanitizedFilename = sanitizedFilename.substring(0, 255);
+        }
+        return sanitizedFilename + ".pdf";
+    }
+
     public void writeQuoteToPDF(Quote quote, CompanyName companyName, String filename) {
         List<Item> items = quote.getItems();
+        Ui ui = Ui.getInstance();
 
         try {
             Document document = new Document(PageSize.A4, 50, 50, 50, 50);
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filename + ".pdf"));
+
+            filename = getSecureFilename(filename);
+            FileOutputStream fos;
+            try {
+                fos = new FileOutputStream(filename);
+            } catch (Exception e) {
+                ui.showMessage(e.getMessage());
+                return;
+            }
+            PdfWriter writer = PdfWriter.getInstance(document, fos);
             document.open();
 
             // Add quotation title
@@ -117,7 +140,8 @@ public class PDFWriter {
 
             document.close();
             writer.close();
-            System.out.println("Invoice PDF created successfully!");
+            ui.showMessage("Exporting quote: " + quote.getQuoteName() + 
+                " to " + filename);
         } catch (Exception e) {
             e.printStackTrace();
         }
