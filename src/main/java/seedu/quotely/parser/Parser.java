@@ -67,12 +67,13 @@ public class Parser {
          * edit parse method to allow command input depending on isInsideState
          * add exception handling in parser
          */
+        fullCommand = fullCommand.trim();
         String command = fullCommand.split(" ")[0];
         logger.fine("Extracted command: '" + command + "'");
 
         String arguments = "";
         if (fullCommand.split(" ").length > 1) {
-            arguments = fullCommand.split(" ", 2)[1];
+            arguments = fullCommand.split(" ", 2)[1].trim();
             logger.fine("Extracted arguments: '" + arguments + "'");
         }
         switch (command) {
@@ -156,7 +157,7 @@ public class Parser {
 
         String targetQuoteName = null;
         if (m.find()) {
-            targetQuoteName = m.group(1);
+            targetQuoteName = m.group(1).trim();
         } else {
             logger.warning("Failed to navigate to target with name: " + targetQuoteName);
             throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT, "nav main OR nav n/QUOTE_NAME");

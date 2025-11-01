@@ -24,8 +24,6 @@ public class CalculateTotalCommandTest {
      */
     @Test
     public void execute_calculateTotalCommand_printsCorrectTotal() {
-        // Keep a reference to the original System.out to restore it later
-        PrintStream originalOut = System.out;
         // Create a dynamic stream to capture the output
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
@@ -44,12 +42,7 @@ public class CalculateTotalCommandTest {
             quote.addItem("Paint", 25.0, 2, 0); // 50.0
             quote.addItem("Brushes", 5.5, 4, 0);  // 22.0
             // Total = 72.0
-
             CalculateTotalCommand command = new CalculateTotalCommand(quote);
-
-            // Define the exact output string we expect, including the calculated total
-            String expectedOutput = "Total cost of quote Sample Quote for John Doe: 72.0"
-                    + System.lineSeparator();
 
             // 2. Act: Execute the command
             command.execute(ui, quoteList, companyName, state);

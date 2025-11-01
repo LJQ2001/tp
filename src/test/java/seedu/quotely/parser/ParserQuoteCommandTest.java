@@ -201,6 +201,36 @@ public class ParserQuoteCommandTest {
     }
 
     @Test
+    public void parseNavCommand_leadingSpace_returnNavCommand() {
+        QuotelyState state = QuotelyState.getInstance();
+        QuoteList quoteList = new QuoteList();
+        Quote q = new Quote("quote 1", "customer 1");
+        state.setOutsideQuote();
+        quoteList.addQuote(q);
+        try {
+            Command command = Parser.parse("    nav   n/quote 1", state, quoteList);
+            assertTrue(command instanceof NavigateCommand);
+        } catch (Exception e) {
+            assert false : "Exception should not be thrown";
+        }
+    }
+
+    @Test
+    public void parseNavCommand_spaceBeforeQuote_returnNavCommand() {
+        QuotelyState state = QuotelyState.getInstance();
+        QuoteList quoteList = new QuoteList();
+        Quote q = new Quote("quote 1", "customer 1");
+        state.setOutsideQuote();
+        quoteList.addQuote(q);
+        try {
+            Command command = Parser.parse("    nav   n/     quote 1", state, quoteList);
+            assertTrue(command instanceof NavigateCommand);
+        } catch (Exception e) {
+            assert false : "Exception should not be thrown";
+        }
+    }
+
+    @Test
     public void parseNavCommand_validMainInput_returnNavCommand() {
         QuotelyState state = QuotelyState.getInstance();
         QuoteList quoteList = new QuoteList();
