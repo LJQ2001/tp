@@ -175,6 +175,18 @@ public class ParserQuoteCommandTest {
     }
 
     @Test
+    public void parseUnquoteCommand_invalidArgumentInsideQuote_throwException() {
+        QuotelyState state = QuotelyState.getInstance();
+        QuoteList quoteList = new QuoteList();
+        Quote q = new Quote("quote 1", "customer 1");
+        state.setInsideQuote(q);
+        quoteList.addQuote(q);
+        assertThrows(QuotelyException.class, () -> {
+            Parser.parse("unquote wrong format", state, quoteList);
+        });
+    }
+
+    @Test
     public void parseNavCommand_validQuoteName_returnNavCommand() {
         QuotelyState state = QuotelyState.getInstance();
         QuoteList quoteList = new QuoteList();

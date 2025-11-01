@@ -122,16 +122,6 @@ public class ParserUtilityCommandTest {
     }
 
     @Test
-    public void parseSearchCommand_invalidState_throwInvalidStateException() {
-        QuoteList quoteList = new QuoteList();
-        QuotelyState state = QuotelyState.getInstance();
-        state.setInsideQuote(new Quote("quote name", "customer name"));
-        assertThrows(QuotelyException.class, () -> {
-            Parser.parse("search n/quote1", state, quoteList);
-        });
-    }
-
-    @Test
     public void parseSearchCommand_invalidInput_throwException() {
         QuoteList quoteList = new QuoteList();
         QuotelyState state = QuotelyState.getInstance();

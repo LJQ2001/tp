@@ -55,7 +55,7 @@ public class QuotelyException extends Exception {
         case NO_ACTIVE_QUOTE:
             return "There is no active quote. Please navigate to a quote or specify one in the commands.";
         case QUOTE_NOT_FOUND:
-            return "The specified quote was not found.";
+            return "The specified quote (" + message +  ") was not found.";
         case ITEM_NOT_FOUND:
             return "The specified item was not found in the quote.";
         case INVALID_STATE:
