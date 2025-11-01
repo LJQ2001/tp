@@ -37,8 +37,8 @@ public class PDFWriter {
         String sanitizedFilename = filename.
             replace("/", "_").
             replace("\\", "_").
-            replace(".", "_").
-            replace("..", "_");
+            replace("..", "_").
+            replace(".", "_");
         if (sanitizedFilename.length() > 255) {
             sanitizedFilename = sanitizedFilename.substring(0, 255);
         }
@@ -140,6 +140,7 @@ public class PDFWriter {
 
             document.close();
             writer.close();
+            fos.close();
             ui.showMessage("Exporting quote: " + quote.getQuoteName() + 
                 " to " + filename);
         } catch (Exception e) {
