@@ -27,7 +27,8 @@ public class Parser {
 
     private static final String ADD_QUOTE_COMMAND_PATTERN = "^n/(.+?)\\s+c/(.+)$";
     private static final String QUOTENAME_ARG_PATTERN = "^n/(.+)$";
-    private static final String EXPORT_QUOTENAME_ARG_PATTERN = "^n/([^f]+?)(?=\\sf/|$)";
+    private static final String EXPORT_QUOTENAME_ARG_PATTERN = "^n/(.+?)(?=\\s+f/|$)";
+    private static final String EXPORT_START_PATTERN = "^(n/|f/)";
     private static final String FILENAME_ARG_PATTERN = "f/(.+)$";
     private static final String REGISTER_COMMAND_PATTERN = "^c/(.+)$";
     private static final String ADD_ITEM_COMMAND_PATTERN
@@ -166,7 +167,7 @@ public class Parser {
         } catch (QuotelyException e) {
             logger.warning("Failed to navigate to target with name: " + targetQuoteName);
             if (targetQuoteName != null) {
-                throw new QuotelyException(QuotelyException.ErrorType.QUOTE_NOT_FOUND);
+                throw new QuotelyException(QuotelyException.ErrorType.QUOTE_NOT_FOUND, targetQuoteName);
             } else {
                 throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT,
                     "nav main OR nav n/QUOTE_NAME");
@@ -183,6 +184,10 @@ public class Parser {
         String quoteName = null;
         if (m.find()) {
             quoteName = m.group(1).trim();
+        } else if (arguments.length() > 0) {
+            // if arguments were provided but did not match pattern
+            logger.warning("Invalid format for delete quote command: " + arguments);
+            throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT, "unquote [n/QUOTE_NAME]");
         }
         try {
             Quote quote = getQuoteFromStateAndName(quoteName, state, quoteList);
@@ -191,7 +196,7 @@ public class Parser {
         } catch (QuotelyException e) {
             logger.warning("Failed to find quote for deletion with name: " + quoteName);
             if (quoteName != null) {
-                throw new QuotelyException(QuotelyException.ErrorType.QUOTE_NOT_FOUND);
+                throw new QuotelyException(QuotelyException.ErrorType.QUOTE_NOT_FOUND, quoteName);
             } else {
                 throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT, "unquote [n/QUOTE_NAME]");
             }
@@ -205,11 +210,19 @@ public class Parser {
         Matcher m = p.matcher(arguments);
         Pattern f = Pattern.compile(FILENAME_ARG_PATTERN);
         Matcher fileMatcher = f.matcher(arguments);
+        Pattern startPattern = Pattern.compile(EXPORT_START_PATTERN);
+        Matcher startMatcher = startPattern.matcher(arguments);
+        if (arguments.length() > 0 && !startMatcher.find()) {
+            logger.warning("Invalid format for export quote command: " + arguments);
+            throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT,
+                "export [n/QUOTE_NAME] [f/FILENAME]");
+        }
 
         String quoteName = null;
         if (m.find()) {
             quoteName = m.group(1).trim();
         }
+        
         try {
             Quote quote = getQuoteFromStateAndName(quoteName, state, quoteList);
             String filename = quote.getQuoteName();
@@ -225,7 +238,7 @@ public class Parser {
         } catch (QuotelyException e) {
             logger.warning("Failed to find quote for export with name: " + quoteName);
             if (quoteName != null) {
-                throw new QuotelyException(QuotelyException.ErrorType.QUOTE_NOT_FOUND);
+                throw new QuotelyException(QuotelyException.ErrorType.QUOTE_NOT_FOUND, quoteName);
             } else {
                 throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT,
                     "export [n/QUOTE_NAME] [f/FILENAME]");
@@ -279,7 +292,7 @@ public class Parser {
             } catch (QuotelyException e) {
                 logger.warning("Failed to find quote name:" + quoteName + " for adding item");
                 if (quoteName != null) {
-                    throw new QuotelyException(QuotelyException.ErrorType.QUOTE_NOT_FOUND);
+                    throw new QuotelyException(QuotelyException.ErrorType.QUOTE_NOT_FOUND, quoteName);
                 } else {
                     throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT,
                             "add i/ITEM_NAME [n/QUOTE_NAME] p/PRICE q/QUANTITY [t/TAX_RATE]");
@@ -348,7 +361,7 @@ public class Parser {
             } catch (QuotelyException e) {
                 logger.warning("Failed to find quote name:" + quoteName + " for deleting item");
                 if (quoteName != null) {
-                    throw new QuotelyException(QuotelyException.ErrorType.QUOTE_NOT_FOUND);
+                    throw new QuotelyException(QuotelyException.ErrorType.QUOTE_NOT_FOUND, quoteName);
                 } else {
                     throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT,
                             "delete i/ITEM_NAME [n/QUOTE_NAME]");
@@ -385,7 +398,7 @@ public class Parser {
         } catch (QuotelyException e) {
             logger.warning("Invalid format for calculate total command: " + arguments);
             if (quoteName != null) {
-                throw new QuotelyException(QuotelyException.ErrorType.QUOTE_NOT_FOUND);
+                throw new QuotelyException(QuotelyException.ErrorType.QUOTE_NOT_FOUND, quoteName);
             } else {
                 throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT,
                         "total [n/QUOTE_NAME]");
@@ -434,10 +447,6 @@ public class Parser {
 
         if (m.find()) {
             quoteName = m.group(1).trim();
-            if (state.isInsideQuote()) {
-                logger.warning("Attempted to use n/QUOTE_NAME while inside a quote");
-                throw new QuotelyException(QuotelyException.ErrorType.INVALID_STATE);
-            }
             logger.info("Successfully parsed search quote command");
             return new SearchQuoteCommand(quoteName);
         } else {
