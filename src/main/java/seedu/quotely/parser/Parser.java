@@ -27,7 +27,7 @@ public class Parser {
 
     private static final String ADD_QUOTE_COMMAND_PATTERN = "^n/(.+?)\\s+c/(.+)$";
     private static final String QUOTENAME_ARG_PATTERN = "^n/(.+)$";
-    private static final String EXPORT_QUOTENAME_ARG_PATTERN = "^n/(.+?)(?=\\s*f/|$)";
+    private static final String EXPORT_QUOTENAME_ARG_PATTERN = "^n/(.+?)(?=\\s+f/|$)";
     private static final String EXPORT_START_PATTERN = "^(n/|f/)";
     private static final String FILENAME_ARG_PATTERN = "f/(.+)$";
     private static final String REGISTER_COMMAND_PATTERN = "^c/(.+)$";
