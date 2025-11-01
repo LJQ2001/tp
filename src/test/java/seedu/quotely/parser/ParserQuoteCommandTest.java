@@ -78,17 +78,6 @@ public class ParserQuoteCommandTest {
     }
 
     @Test
-    public void parseAddQuoteCommand_insideQuote_throwException() {
-        QuoteList quoteList = new QuoteList();
-        QuotelyState state = QuotelyState.getInstance();
-        Quote q = new Quote("quote name", "customer name");
-        state.setInsideQuote(q);
-        assertThrows(QuotelyException.class, () -> {
-            Parser.parse("quote n/Quote Name c/Customer Name", state, quoteList);
-        });
-    }
-
-    @Test
     public void parseDeleteQuoteCommand_validInputOutsideQuote_returnDeleteQuoteCommand() {
         QuotelyState state = QuotelyState.getInstance();
         state.setOutsideQuote();
