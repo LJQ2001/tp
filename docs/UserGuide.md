@@ -3,25 +3,25 @@
 ## Table of Content
 
 - [User Guide](#user-guide)
-    - [Table of Content](#table-of-content)
-    - [Introduction](#introduction)
-    - [Quick Start](#quick-start)
-    - [Features](#features)
-        - [Register Company Name: `register`](#register-company-name-register)
-        - [Creating a Quote: `quote`](#creating-a-quote-quote)
-        - [Deleting a Quote: `unquote`](#deleting-a-quote-unquote)
-        - [Adding an item: `add`](#adding-an-item-add)
-        - [Delete an item `delete`](#delete-an-item-delete)
-        - [Calculate the total `total`](#calculate-the-total-total)
-        - [Export a quote: `export`](#export-a-quote-export)
-        - [Finish the Quote `finish`](#finish-the-quote-finish)
-        - [Navigate: `nav`](#navigate-nav)
-        - [Searching for Quotes: `search`](#searching-for-quotes-search)
-        - [Show all Quotes: `show`](#show-all-quotes-show)
-        - [Exit `exit`](#exit-exit)
-    - [FAQ](#faq)
-    - [Command Summary](#command-summary)
-    - [Coming soon](#coming-soon)
+  - [Table of Content](#table-of-content)
+  - [Introduction](#introduction)
+  - [Quick Start](#quick-start)
+  - [Features](#features)
+    - [Register Company Name: `register`](#register-company-name-register)
+    - [Creating a Quote: `quote`](#creating-a-quote-quote)
+    - [Deleting a Quote: `unquote`](#deleting-a-quote-unquote)
+    - [Adding an item: `add`](#adding-an-item-add)
+    - [Delete an item `delete`](#delete-an-item-delete)
+    - [Calculate the total `total`](#calculate-the-total-total)
+    - [Export a quote: `export`](#export-a-quote-export)
+    - [Finish the Quote `finish`](#finish-the-quote-finish)
+    - [Navigate: `nav`](#navigate-nav)
+    - [Searching for Quotes: `search`](#searching-for-quotes-search)
+    - [Show all Quotes: `show`](#show-all-quotes-show)
+    - [Exit `exit`](#exit-exit)
+  - [FAQ](#faq)
+  - [Command Summary](#command-summary)
+  - [Coming soon](#coming-soon)
 
 ## Introduction
 
@@ -271,6 +271,9 @@ Key behaviours
 - If run while editing a quote (inside quote), `export` with no `n/` argument exports the active quote.
 - If run from the main menu, you must provide the quote name via `n/QUOTE_NAME`.
 - Use `f/FILE_NAME` to explicitly set the output file name; otherwise the quote name is used.
+- `.`, `\`, `..`, and `/` in the filename are replaced by `_` to prevent any insecure file 
+paths.
+- Filename is truncated to a maximum length of 255 characters to avoid file system errors.
 
 **Format:**
 
