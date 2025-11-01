@@ -37,7 +37,7 @@ public class QuotelyException extends Exception {
         case FILE_ERROR:
             return "There was an error loading the file.";
         case INVALID_COMMAND:
-            return "I'm sorry, but I don't know what that means.";
+            return handleInvalidCommand();
         case WRONG_COMMAND_FORMAT:
             return "The command format is incorrect. \nHere is the correct format: \n" + message;
         case INVALID_TASK_NUMBER:
@@ -67,5 +67,22 @@ public class QuotelyException extends Exception {
         default:
             return "An unknown error occurred.";
         }
+    }
+
+    private String handleInvalidCommand() {
+        return "I'm sorry, but I don't know what that means. \n\n" +
+                "Here are valid commands you may give: \n" +
+                "1) Register company name `register c/COMPANY_NAME`\n" +
+                "2) Create a quote `quote n/QUOTE_NAME c/CUSTOMER_NAME\n" +
+                "3) Delete a quote `unquote n/QUOTE_NAME`\n" +
+                "4) Add an item `add i/ITEM_NAME {n/QUOTE_NAME} p/PRICE q/QUANTITY`\n" +
+                "5) Delete an item `delete i/ITEM_NAME {n/QUOTE_NAME}`\n" +
+                "6) Export a quote to pdf file `export {n/QUOTE_NAME} f/FILE_NAME`\n" +
+                "7) Calculate the total of a quote `total {n/QUOTE_NAME}`\n" +
+                "8) Navigate to a quote or main menu `nav n/QUOTE_NAME/ nav main`\n" +
+                "9) Finish the Quote `finish`\n" +
+                "10) Show all quotes `show`\n" +
+                "11) Search for Quotes `search n/QUOTE_NAME`\n" +
+                "12) Exit the program `exit`\n";
     }
 }
