@@ -222,7 +222,7 @@ public class Parser {
         if (m.find()) {
             quoteName = m.group(1).trim();
         }
-        System.out.println("Exporting quote: " + quoteName);
+        
         try {
             Quote quote = getQuoteFromStateAndName(quoteName, state, quoteList);
             String filename = quote.getQuoteName();
