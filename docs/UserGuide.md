@@ -25,20 +25,16 @@
 
 ## Introduction
 
-This user guide provides step-by-step instructions with examples on how to use Quotely, a CLI based application to help
-you create quotes efficiently and cleanly.
+This user guide provides step-by-step instructions with examples on how to use Quotely, a CLI based application to help you create quotes efficiently and cleanly.
 
-Usage starts from the main menu, and enters the quotation menu when creating or editing a quote. The user may
-return to the main menu by finishing or deleting the quote.
+Usage starts from the main menu, and enters the quotation menu when creating or editing a quote. The user may return to the main menu by finishing or deleting the quote.
 
 ## Quick Start
 
 1. Ensure that you have Java 17 or above installed.
-2. Down the latest version of `Quotely`
-   from [here](https://github.com/AY2526S1-CS2113-W10-1/tp/releases).
+2. Download the latest version of `Quotely` from [here](https://github.com/AY2526S1-CS2113-W10-1/tp/releases).
 3. Copy quotely.jar to the folder you want to use as the home folder.
-4. Open a command terminal, cd into the folder you put the jar file in, and use the java -jar quotely.jar command to
-   run the application.
+4. Open a command terminal, cd into the folder you put the jar file in, and use the java -jar quotely.jar command to run the application.
 
 Refer to Features below to see more details on using the quotely application!
 
@@ -115,8 +111,7 @@ unquote {n/QUOTE_NAME}
 ```
 
 * The `QUOTE_NAME` can be in a natural language format.
-* `{n/QUOTE_NAME}` - Quote name (optional when inside a quote; if specified, that quote will be deleted instead of the
-  current one)
+* `{n/QUOTE_NAME}` - Quote name (optional when inside a quote; if specified, that quote will be deleted instead of the current one)
 
 **Example:**
 
@@ -155,10 +150,9 @@ add i/ITEM_NAME {n/QUOTE_NAME} p/PRICE q/QUANTITY {t/TAX_RATE}
 ```
 
 * The `ITEM_NAME` and `QUOTE_NAME` can be in a natural language format.
-* `{n/QUOTE_NAME}` - Quote name (optional when inside a quote; if specified, item will be added to that quote instead of
-  the current one)
+* `{n/QUOTE_NAME}` - Quote name (optional when inside a quote; if specified, item will be added to that quote instead of the current one)
 * The `PRICE` should be decimal and not negative(0 is allowed).
-* The `QUANTITY` should be integer and postive.
+* The `QUANTITY` should be integer and positive.
 * The `TAX_RATE` should be decimal and not negative.
 
 **Example:**
@@ -198,8 +192,7 @@ Command is available in both main menu and during quotation.
 delete i/ITEM_NAME {n/QUOTE_NAME}
 ```
 
-* `{n/QUOTE_NAME}` - Quote name (optional when inside a quote; if specified, item will be deleted from that quote
-  instead of the current one)
+* `{n/QUOTE_NAME}` - Quote name (optional when inside a quote; if specified, item will be deleted from that quote instead of the current one)
 
 **Example:**
 
@@ -238,8 +231,7 @@ Command is available in both main menu and during quotation.
 total {n/QUOTE_NAME}
 ```
 
-* `{n/QUOTE_NAME}` - Quote name (optional when inside a quote; if specified, total will be calculated for that quote
-  instead of the current one)
+* `{n/QUOTE_NAME}` - Quote name (optional when inside a quote; if specified, total will be calculated for that quote instead of the current one)
 
 **Example:**
 
@@ -263,16 +255,14 @@ Total cost of quote quote 1 for c: 1023.4
 
 ### Export a quote: `export`
 
-Export a quote to PDF (invoice-style). The command formats the selected Quote and writes a PDF file into the current
-working directory.
+Export a quote to PDF (invoice-style). The command formats the selected Quote and writes a PDF file into the current working directory.
 
 Key behaviours
 
 - If run while editing a quote (inside quote), `export` with no `n/` argument exports the active quote.
 - If run from the main menu, you must provide the quote name via `n/QUOTE_NAME`.
 - Use `f/FILE_NAME` to explicitly set the output file name; otherwise the quote name is used.
-- `.`, `\`, `..`, and `/` in the filename are replaced by `_` to prevent any insecure file 
-paths.
+- `.`, `\`, `..`, and `/` in the filename are replaced by `_` to prevent any insecure file paths.
 - Filename is truncated to a maximum length of 255 characters to avoid file system errors.
 
 **Format:**
@@ -283,8 +273,7 @@ export {n/QUOTE_NAME} {f/FILE_NAME}
 
 Notes on filenames
 
-- `FILE_NAME` may be provided with or without the `.pdf` extension. The application will ensure the final file uses the
-  `.pdf` extension.
+- `FILE_NAME` may be provided with or without the `.pdf` extension. The application will ensure the final file uses the `.pdf` extension.
 
 **Example:**
 
@@ -460,14 +449,11 @@ Bye. Hope to see you again soon!
 
 **Q**: Will I be able to access my past quote records after exiting the program?
 
-**A**: Yes, from V2.0 onwards, every run saves a `quotely.json` file in a data subfolder. The data subfolder exists in
-the same directory as the `quotely.jar` file.
+**A**: Yes, from V2.0 onwards, every run saves a `quotely.json` file in a data subfolder. The data subfolder exists in the same directory as the `quotely.jar` file.
 
 **Q**: What happens if I accidentally deleted a quote/item? Can I retrieve that quote/item back?
 
-**A**: Unfortunately, the app is not able to restore deleted quotes or items. Therefore, we suggest that you thoroughly
-review
-any deletion commands before running them as once executed, they are permanent.
+**A**: Unfortunately, the app is not able to restore deleted quotes or items. Therefore, we suggest that you thoroughly review any deletion commands before running them as once executed, they are permanent.
 
 **Q**: How do I transfer my data to another computer?
 
@@ -493,11 +479,8 @@ any deletion commands before running them as once executed, they are permanent.
 We are working on exciting improvements to make Quotely more powerful and flexible for your business needs!
 
 * Custom PDF Templates
-    * Soon, you’ll be able to choose from multiple PDF layouts when exporting your quotes. This will allow you to choose
-      the appropriate PDF template for any situation.
+  * Soon, you’ll be able to choose from multiple PDF layouts when exporting your quotes. This will allow you to choose the appropriate PDF template for any situation.
 * Multi-Currency Support
-    * Quotely will support different currencies. This means you can create quotes for clients anywhere in the world.
+  * Quotely will support different currencies. This means you can create quotes for clients anywhere in the world.
 * Installment Calculator
-    * Manage flexible billing for larger projects or long-term clients with ease. You will soon be able to break down
-      totals into monthly or custom payments.
-
+  * Manage flexible billing for larger projects or long-term clients with ease. You will soon be able to break down totals into monthly or custom payments.
