@@ -32,7 +32,7 @@ Usage starts from the main menu, and enters the quotation menu when creating or 
 ## Quick Start
 
 1. Ensure that you have Java 17 or above installed.
-2. Down the latest version of `Quotely` from [here](https://github.com/AY2526S1-CS2113-W10-1/tp/releases).
+2. Download the latest version of `Quotely` from [here](https://github.com/AY2526S1-CS2113-W10-1/tp/releases).
 3. Copy quotely.jar to the folder you want to use as the home folder.
 4. Open a command terminal, cd into the folder you put the jar file in, and use the java -jar quotely.jar command to run the application.
 
@@ -152,7 +152,7 @@ add i/ITEM_NAME {n/QUOTE_NAME} p/PRICE q/QUANTITY {t/TAX_RATE}
 * The `ITEM_NAME` and `QUOTE_NAME` can be in a natural language format.
 * `{n/QUOTE_NAME}` - Quote name (optional when inside a quote; if specified, item will be added to that quote instead of the current one)
 * The `PRICE` should be decimal and not negative(0 is allowed).
-* The `QUANTITY` should be integer and postive.
+* The `QUANTITY` should be integer and positive.
 * The `TAX_RATE` should be decimal and not negative.
 
 **Example:**
@@ -262,7 +262,7 @@ Key behaviours
 - If run while editing a quote (inside quote), `export` with no `n/` argument exports the active quote.
 - If run from the main menu, you must provide the quote name via `n/QUOTE_NAME`.
 - Use `f/FILE_NAME` to explicitly set the output file name; otherwise the quote name is used.
-- `.`, `\`, `..`, and `/` in the filename are replaced by `_` to prevent any insecure file  paths.
+- `.`, `\`, `..`, and `/` in the filename are replaced by `_` to prevent any insecure file paths.
 - Filename is truncated to a maximum length of 255 characters to avoid file system errors.
 
 **Format:**
@@ -479,7 +479,7 @@ Bye. Hope to see you again soon!
 We are working on exciting improvements to make Quotely more powerful and flexible for your business needs!
 
 * Custom PDF Templates
-  * Soon, you’ll be able to choose from multiple PDF layouts when exporting your quotes This will allow you to choose the appropriate PDF template for any situation.
+  * Soon, you’ll be able to choose from multiple PDF layouts when exporting your quotes. This will allow you to choose the appropriate PDF template for any situation.
 * Multi-Currency Support
   * Quotely will support different currencies. This means you can create quotes for clients anywhere in the world.
 * Installment Calculator
