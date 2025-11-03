@@ -34,7 +34,7 @@ public class StorageTest {
     public void saveData_validInput_returnString() {
         try {
             Path tempFile = Files.createTempFile("test", ".txt");
-            Storage storage = new Storage(tempFile.toString());
+            Storage storage = new Storage(tempFile.getParent().toString(), tempFile.getFileName().toString());
 
             String expectedEmptyString = "";
             storage.saveData(expectedEmptyString);
@@ -60,7 +60,7 @@ public class StorageTest {
     public void saveData_invalidInput_throwException() {
         try {
             Path tempFile = Files.createTempFile("test", ".txt");
-            Storage storage = new Storage(tempFile.toString());
+            Storage storage = new Storage(tempFile.getParent().toString(), tempFile.getFileName().toString());
             assertThrows(AssertionError.class, () -> storage.saveData(null));
         } catch (Exception e) {
             assert false : "Exception should not be thrown";
@@ -71,7 +71,7 @@ public class StorageTest {
     public void loadData_validInput_returnString() {
         try {
             Path tempFile = Files.createTempFile("test", ".txt");
-            Storage storage = new Storage(tempFile.toString());
+            Storage storage = new Storage(tempFile.getParent().toString(), tempFile.getFileName().toString());
 
             storage.saveData("");
             String expectedEmptyString = storage.loadData();
@@ -89,7 +89,7 @@ public class StorageTest {
     public void loadData_invalidInput_returnEmptyString() {
         try {
             Path tempFile = Files.createTempFile("test", ".txt");
-            Storage storage = new Storage(tempFile.toString());
+            Storage storage = new Storage(tempFile.getParent().toString(), tempFile.getFileName().toString());
             //delete the file path to simulate nonexistent file path situation
             Files.deleteIfExists(tempFile);
 
@@ -99,3 +99,4 @@ public class StorageTest {
         }
     }
 }
+
