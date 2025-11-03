@@ -240,58 +240,60 @@ How the `Data` component works:
 
 The `Storage` component,
 
-* handles the persistence of application data (the `QuoteList`) between sessions
-* loads the `QuoteList` from a local JSON file (data/quotely.json) when the application starts
-* saves the `QuoteList` back to the JSON file after each successful command
-* comprised of a Storage class (for raw file I/O) and a JsonSerializer (for object-to-JSON conversion)
-The Storage component is responsible for loading data from local disk at initialisation of Quotely and save changes to Data back to local disk after user inputs have been successfully executed.
+* handles the persistence of all application data (both the `QuoteList` and the `CompanyName`) between sessions.
+* loads all data from a local JSON file (e.g., `data/quotely.json`) when the application starts.
+* saves all data back to the JSON file after each successful command.
+* comprised of a `Storage` class (for raw file I/O) , a `JsonSerializer` class (for object-to-JSON conversion) and `ApplicationData` 
+which is a wrapper class that holds both `QuoteList` and `CompanyName`
+The Storage component is responsible for loading data from local disk at initialisation of Quotely 
+and save changes to Data back to local disk after user inputs have been successfully executed.
 
-* Handles the persistence of application data (the `QuoteList`) between sessions.
-* Loads the `QuoteList` from a local JSON file (data/quotely.json) when the application starts.
-* Saves the `QuoteList` back to the JSON file after each successful command.
-* Comprised of a Storage class (for raw file I/O) and a JsonSerializer (for object-to-JSON conversion).
 
 The class diagram of the `File storage` component is shown below:
 
-!['File storage class diagram'](./diagrams/class/storage.png)
+!['Storage Class Diagram'](diagrams/class/localstorage.png)
 
 How the `File storage` component works:
 
-* When Quotely starts, it initializes a Storage object with a file path.
-* The Storage constructor ensures the directory exists and prepares the file for reading or writing.
-* To load data, the application calls Storage.loadData(), whereby:
-  * Reads JSON text from the file (if it exists).
-  * Passes the text to JsonSerializer.deserialize().
-  * Converts the JSON string into a QuoteList object containing all saved Quote and Item data.
-* To save data after user commands, the application calls Storage.saveData(String data), whereby:
-  * Uses JsonSerializer.serialize(quoteList) to convert the in-memory QuoteList into a JSON string.
-  * Writes that string back into the data file, replacing any previous content.
+* When `Quotely` starts, it initializes a `Storage` object with an OS-independent path 
+by providing a directory (`data`) and a filename (`quotely.json`).
+* `Quotely` (main class) then calls its internal `loadDataFromFile()` method to **load** data, which:
+  * Calls `Storage.loadData()` to read the raw JSON text from the file.
+  * Passes this text to `JsonSerializer.deserialize()`.
+  * `JsonSerializer` uses Gson to convert the JSON string into an `ApplicationData` object
+  * `Quotely` receives this `ApplicationData` object and uses it to set its internal `quoteList` and `companyName` 
+  fields.
+* To **save** data after a command, Quotely calls its internal `saveDataToFile()` method, which:
+  * Creates a new `ApplicationData(quoteList, companyName)` object to wrap the current data
+  * Passes this wrapper object to `JsonSerializer.serialize()` to get a JSON string
+  * Passes that string to `Storage.saveData()`, which overwrites the file on disk
 
-The JSON storage format used by the `Storage` component (persisted in `data/quotely.json`) is shown below.
-Each quote object contains `quoteName`, `customerName`, and an `items` array; each item object includes `itemName`, `price`, `quantity`, and `taxRate`.
+The JSON storage format (persisted in `data/quotely.json`) is shown below. The root object contains two primary keys: 
+`companyName` (which stores the registered company's name) and `quoteList` (which holds the array of quotes). 
+Each quote object in the array contains its `quoteName` (which acts as a unique ID), `customerName`, and an `items` array.
+Finally, each item object includes its `itemName`, `price`, `quantity`, and `taxRate`.
 
 ```
 {
-  "quotes": [
-    {
-      "quoteName": "quote 1",
-      "customerName": "John Doe",
-      "items": [
-        {
-          "itemName": "book",
-          "price": 100.0,
-          "quantity": 100,
-          "taxRate": 0.0
-        },
-        {
-          "itemName": "pencil",
-          "price": 13.2,
-          "quantity": 10,
-          "taxRate": 1.2
-        }
-      ]
-    }
-  ]
+  "quoteList": {
+    "quotes": [
+      {
+        "quoteName": "Project Alpha",
+        "customerName": "Client A",
+        "items": [
+          {
+            "itemName": "Hosting",
+            "price": 50.0,
+            "quantity": 12,
+            "taxRate": 9.0
+          }
+        ]
+      }
+    ]
+  },
+  "companyName": {
+    "companyName": "First Company Inc"
+  }
 }
 ```
 
@@ -579,7 +581,7 @@ The file storage feature ensures all data is saved to local file preventing data
 
 The sequence diagram below illustrates the loading process at startup and the saving process after a command.
 
-!['Gson sequence diagram'](./diagrams/sequence/gson.png)
+!['Gson sequence diagram'](diagrams/sequence/json.png)
 
 #### Developers note (Implementation of File Storage)
 
