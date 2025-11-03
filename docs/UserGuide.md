@@ -509,3 +509,5 @@ We are working on exciting improvements to make Quotely more powerful and flexib
 * Installment Calculator
     * Manage flexible billing for larger projects or long-term clients with ease. You will soon be able to break down
       totals into monthly or custom payments.
+* Edit Items
+  * Soon, you’ll be able to edit and delete specified Items in the quote.

@@ -35,6 +35,7 @@
       - [Multiple PDF Generation Templates](#multiple-pdf-generation-templates)
       - [Multi currency support](#multi-currency-support)
       - [Installment calculator](#installment-calculator)
+      - [Edit Item function](#edit-item-function)
   - [Product scope](#product-scope)
     - [Target user profile](#target-user-profile)
     - [Value proposition](#value-proposition)
@@ -585,7 +586,7 @@ The sequence diagram below illustrates the loading process at startup and the sa
 Notes
 -----
 
-- These checks are implemented in `Parser.parseAddItemCommand(...)` and will raise `QuotelyException` with the appropriate `ErrorType`. Keep user-facing messages clear and prescriptive (show the expected format and which token is invalid).
+- These checks are implemented in `Parser.parseAddItemCommand(...)` and will raise `QuotelyException` with the appropriate `ErrorType`. Keep user-facing messages clear and prescriptive (show the expected format and which token is invalid.
 - For robust UX, consider adding unit tests that assert the parser rejects these inputs and that the Ui shows the intended help/error messages.
 
 ### Proposed implementations of future features
@@ -616,6 +617,17 @@ Installment calculation is useful for sales workers handling quotation to client
 A new state using QuotelyState shall be used for implementation, to allow users to navigate from main menu to the installment calculator tool. Parser and command components will be modified to execute calculation in a similar manner to existing commands.
 
 This feature may be further expanded to include installment details in CLI and PDF quotations.
+
+#### Edit Item function
+
+Current implementation of Item only allows for add and remove.
+
+The proposed improvement must include:
+* Prevent duplicate Item names
+* New command to allow user to select item using name (similar mechanism to search quote function)
+* New commands to allow user to edit price, quantity and tax values
+
+Additional function: allow user to delete the specified Item
 
 ## Product scope
 
