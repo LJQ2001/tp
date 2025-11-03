@@ -49,6 +49,16 @@ public class Parser {
     private static final String REGISTER_COMMAND_KEYWORD = "register";
     private static final String EXIT_COMMAND_KEYWORD = "exit";
 
+    //Fixed Variable Declarations
+    private static double MAX_PRICE = 9999.99;
+    private static int MAX_QTY = 999;
+    private static int MAX_ITEMS = 30;
+    private static double MAX_TAX_RATE = 200.00;
+    private static int MAX_ITEMNAME_LENGTH = 30;
+    private static int MAX_QUOTENAME_LENGTH = 50;
+    private static int MAX_COMPANYNAME_LENGTH = 46;
+    private static int MAX_CUSTOMERNAME_LENGTH = 45;
+
     public static Command parse(String fullCommand, QuotelyState state, QuoteList quoteList)
             throws QuotelyException {
 
@@ -128,6 +138,18 @@ public class Parser {
         if (m.find()) {
             String quoteName = m.group(1).trim();
             String customerName = m.group(2).trim();
+
+            //parse quote name length
+            if (quoteName.length() > MAX_QUOTENAME_LENGTH) {
+                logger.warning("Invalid quote name length for add quote command: " + arguments);
+                throw new QuotelyException(QuotelyException.ErrorType.INVALID_QUOTE_NAME);
+            }
+
+            //parse customer name length
+            if (customerName.length() > MAX_CUSTOMERNAME_LENGTH) {
+                logger.warning("Invalid customer name length for add quote command: " + arguments);
+                throw new QuotelyException(QuotelyException.ErrorType.INVALID_CUSTOMER_NAME);
+            }
 
             logger.info("Successfully parsed add quote command - Quote: '"
                     + quoteName + "', Customer: '" + customerName + "'");
@@ -253,6 +275,13 @@ public class Parser {
 
         if (m.find()) {
             String name = m.group(1).trim();
+
+            //parse company name
+            if (name.length() > MAX_COMPANYNAME_LENGTH) {
+                logger.warning("Invalid company name length for register command: " + arguments);
+                throw new QuotelyException(QuotelyException.ErrorType.INVALID_COMPANY_NAME);
+            }
+
             logger.info("Successfully parsed register command for company: " + name);
             return new RegisterCommand(name);
         } else {
@@ -271,6 +300,11 @@ public class Parser {
 
         if (m.find()) {
             String itemName = m.group(1).trim();
+            //parse item name length
+            if (itemName.length() > MAX_ITEMNAME_LENGTH) {
+                logger.warning("Invalid item name length for add item command: " + arguments);
+                throw new QuotelyException(QuotelyException.ErrorType.INVALID_ITEM_NAME);
+            }
             String quoteName = m.group(2) != null ? m.group(2).trim() : null;
             String priceStr = m.group(3).trim();
             String quantityStr = m.group(4).trim();
@@ -289,6 +323,13 @@ public class Parser {
             // extract quote from quoteName or state
             try {
                 quote = getQuoteFromStateAndName(quoteName, state, quoteList);
+
+                //parse quote item count
+                if (quote.getItems().size() > MAX_ITEMS) {
+                    logger.warning("Invalid item count for quote for add item command: " + arguments);
+                    throw new QuotelyException(QuotelyException.ErrorType.INVALID_ITEM_NUMBER);
+                }
+
             } catch (QuotelyException e) {
                 logger.warning("Failed to find quote name:" + quoteName + " for adding item");
                 if (quoteName != null) {
@@ -305,6 +346,9 @@ public class Parser {
                 if (price < 0) {
                     throw new QuotelyException(QuotelyException.ErrorType.INVALID_NUMBER_FORMAT);
                 }
+                if (price > MAX_PRICE) {
+                    throw new QuotelyException(QuotelyException.ErrorType.INVALID_ITEM_PRICE);
+                }
             } catch (NumberFormatException e) {
                 logger.warning("Failed to parse price: " + e.getMessage());
                 throw new QuotelyException(QuotelyException.ErrorType.INVALID_NUMBER_FORMAT);
@@ -315,6 +359,9 @@ public class Parser {
                 quantity = Integer.parseInt(quantityStr);
                 if (quantity <= 0) {
                     throw new QuotelyException(QuotelyException.ErrorType.INVALID_NUMBER_FORMAT);
+                }
+                if  (quantity > MAX_QTY) {
+                    throw new QuotelyException(QuotelyException.ErrorType.INVALID_ITEM_QTY);
                 }
             } catch (NumberFormatException e) {
                 logger.warning("Failed to parse quantity: " + e.getMessage());
@@ -327,6 +374,9 @@ public class Parser {
                     taxRate = Double.parseDouble(taxRateStr);
                     if (taxRate < 0) {
                         throw new QuotelyException(QuotelyException.ErrorType.INVALID_NUMBER_FORMAT);
+                    }
+                    if (taxRate > MAX_TAX_RATE) {
+                        throw new QuotelyException(QuotelyException.ErrorType.INVALID_ITEM_TAX);
                     }
                 } catch (NumberFormatException e) {
                     logger.warning("Failed to parse tax rate: " + e.getMessage());
