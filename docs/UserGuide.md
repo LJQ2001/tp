@@ -3,40 +3,45 @@
 ## Table of Content
 
 - [User Guide](#user-guide)
-  - [Table of Content](#table-of-content)
-  - [Introduction](#introduction)
-  - [Quick Start](#quick-start)
-  - [Features](#features)
-    - [Register Company Name: `register`](#register-company-name-register)
-    - [Creating a Quote: `quote`](#creating-a-quote-quote)
-    - [Deleting a Quote: `unquote`](#deleting-a-quote-unquote)
-    - [Adding an item: `add`](#adding-an-item-add)
-    - [Delete an item `delete`](#delete-an-item-delete)
-    - [Calculate the total `total`](#calculate-the-total-total)
-    - [Export a quote: `export`](#export-a-quote-export)
-    - [Finish the Quote `finish`](#finish-the-quote-finish)
-    - [Navigate: `nav`](#navigate-nav)
-    - [Searching for Quotes: `search`](#searching-for-quotes-search)
-    - [Show all Quotes: `show`](#show-all-quotes-show)
-    - [Exit `exit`](#exit-exit)
-  - [FAQ](#faq)
-  - [Command Summary](#command-summary)
-  - [Coming soon](#coming-soon)
+    - [Table of Content](#table-of-content)
+    - [Introduction](#introduction)
+    - [Quick Start](#quick-start)
+    - [Features](#features)
+        - [Register Company Name: `register`](#register-company-name-register)
+        - [Creating a Quote: `quote`](#creating-a-quote-quote)
+        - [Deleting a Quote: `unquote`](#deleting-a-quote-unquote)
+        - [Adding an item: `add`](#adding-an-item-add)
+        - [Delete an item `delete`](#delete-an-item-delete)
+        - [Calculate the total `total`](#calculate-the-total-total)
+        - [Export a quote: `export`](#export-a-quote-export)
+        - [Finish the Quote `finish`](#finish-the-quote-finish)
+        - [Navigate: `nav`](#navigate-nav)
+        - [Searching for Quotes: `search`](#searching-for-quotes-search)
+        - [Show all Quotes: `show`](#show-all-quotes-show)
+        - [Exit `exit`](#exit-exit)
+    - [FAQ](#faq)
+    - [Command Summary](#command-summary)
+    - [Coming soon](#coming-soon)
 
 ## Introduction
 
-This user guide provides step-by-step instructions with examples on how to use Quotely, a CLI based application to help you create quotes efficiently and cleanly.
+This user guide provides step-by-step instructions with examples on how to use Quotely, a CLI based application to help
+you create quotes efficiently and cleanly.
 
-Usage starts from the main menu, and enters the quotation menu when creating or editing a quote. The user may return to the main menu by finishing or deleting the quote.
+Usage starts from the main menu, and enters the quotation menu when creating or editing a quote. The user may return to
+the main menu by finishing or deleting the quote.
+
+Quotes can even be sent exported to PDF to be sent to the customer!
 
 ## Quick Start
 
 1. Ensure that you have Java 17 or above installed.
 2. Download the latest version of `Quotely` from [here](https://github.com/AY2526S1-CS2113-W10-1/tp/releases).
 3. Copy quotely.jar to the folder you want to use as the home folder.
-4. Open a command terminal, cd into the folder you put the jar file in, and use the java -jar quotely.jar command to run the application.
+4. Open a command terminal, cd into the folder you put the jar file in, and use the java -jar quotely.jar command to run
+   the application.
 
-Refer to Features below to see more details on using the quotely application!
+Refer to Features below to see more details on using the Quotely application!
 
 ## Features
 
@@ -71,7 +76,8 @@ Registering company: NUS
 
 Create a new quote for a customer.
 
-Command is available only in the main menu (i.e. new quote cannot be created concurrently with editing another quote).
+Command is available in both main menu and during quotation. If a new quote is created while editing a current quote,
+the command will result in exiting the current quote to edit the newly created quote.
 
 **Format:**
 
@@ -80,7 +86,9 @@ quote n/QUOTE_NAME c/CUSTOMER_NAME
 ```
 
 * The `QUOTE_NAME` and `CUSTOMER_NAME` can be in a natural language format.
-* This command can only be used in main menu.
+* `QUOTE_NAME` is limited to a maximum of 50 characters.
+* `CUSTOMER_NAME` is limited to a maximum of 46 characters.
+* A maximum of 30 items can be added per quote.
 
 **Example:**
 
@@ -111,7 +119,8 @@ unquote {n/QUOTE_NAME}
 ```
 
 * The `QUOTE_NAME` can be in a natural language format.
-* `{n/QUOTE_NAME}` - Quote name (optional when inside a quote; if specified, that quote will be deleted instead of the current one)
+* `{n/QUOTE_NAME}` - Quote name (optional when inside a quote; if specified, that quote will be deleted instead of the
+  current one)
 
 **Example:**
 
@@ -150,10 +159,12 @@ add i/ITEM_NAME {n/QUOTE_NAME} p/PRICE q/QUANTITY {t/TAX_RATE}
 ```
 
 * The `ITEM_NAME` and `QUOTE_NAME` can be in a natural language format.
-* `{n/QUOTE_NAME}` - Quote name (optional when inside a quote; if specified, item will be added to that quote instead of the current one)
-* The `PRICE` should be decimal and not negative(0 is allowed).
-* The `QUANTITY` should be integer and positive.
-* The `TAX_RATE` should be decimal and not negative.
+* `{n/QUOTE_NAME}` - Quote name (optional when inside a quote; if specified, item will be added to that quote instead of
+  the current one)
+* The `PRICE` should be decimal, only values from 0.01 to 9999.99 are allowed.
+* The `QUANTITY` should be integer, only values from 1 to 999 are allowed
+* The `{t/TAX_RATE}` should be a positive decimal, and is set to 0.00% when not specified. Only values from 0.00 to
+  200.00 are allowed.
 
 **Example:**
 
@@ -192,7 +203,8 @@ Command is available in both main menu and during quotation.
 delete i/ITEM_NAME {n/QUOTE_NAME}
 ```
 
-* `{n/QUOTE_NAME}` - Quote name (optional when inside a quote; if specified, item will be deleted from that quote instead of the current one)
+* `{n/QUOTE_NAME}` - Quote name (optional when inside a quote; if specified, item will be deleted from that quote
+  instead of the current one)
 
 **Example:**
 
@@ -231,7 +243,8 @@ Command is available in both main menu and during quotation.
 total {n/QUOTE_NAME}
 ```
 
-* `{n/QUOTE_NAME}` - Quote name (optional when inside a quote; if specified, total will be calculated for that quote instead of the current one)
+* `{n/QUOTE_NAME}` - Quote name (optional when inside a quote; if specified, total will be calculated for that quote
+  instead of the current one)
 
 **Example:**
 
@@ -250,12 +263,13 @@ total n/quote 1
 **Expected output:**
 
 ```
-Total cost of quote quote 1 for c: 1023.4
+Total cost of quote quote 1 for c: $1023.4
 ```
 
 ### Export a quote: `export`
 
-Export a quote to PDF (invoice-style). The command formats the selected Quote and writes a PDF file into the current working directory.
+Export a quote to PDF (invoice-style). The command formats the selected Quote and writes a PDF file into the current
+working directory.
 
 Key behaviours
 
@@ -273,7 +287,8 @@ export {n/QUOTE_NAME} {f/FILE_NAME}
 
 Notes on filenames
 
-- `FILE_NAME` may be provided with or without the `.pdf` extension. The application will ensure the final file uses the `.pdf` extension.
+- `FILE_NAME` may be provided with or without the `.pdf` extension. The application will ensure the final file uses the
+  `.pdf` extension.
 
 **Example:**
 
@@ -326,7 +341,7 @@ Command is available in both main menu and during quotation.
 
 ```
 nav main
-nav {n/QUOTE_NAME}
+nav n/QUOTE_NAME
 ```
 
 **Example:**
@@ -338,7 +353,7 @@ nav n/quote1
 
 **Expected output**
 
-The expected output shows navigation from quote1 to main menu then back to quote1.
+The sample usage shows navigation from quote1 to main menu then back to quote1.
 
 ```
 quote1 > nav main
@@ -356,7 +371,7 @@ quote1 >
 
 Searches for and displays all quotes whose names contain the provided search term.
 
-Command is available **only in the main menu**.
+Command is available only in the main menu.
 
 **Format:**
 
@@ -364,10 +379,8 @@ Command is available **only in the main menu**.
 search n/QUOTE_NAME
 ```
 
-* The `QUOTE_NAME` is the text to search for within quote names.
+* The `QUOTE_NAME` is the key word used to search for within quote names.
 * This command will display the full details for all quotes where the quote **contains** the `QUOTE_NAME`.
-* This command cannot be used while you are inside a quote (editing a quote).
-* Essentially similar to the `show` but instead of all Quotes it just shows the `QUOTE_NAME` quotes.
 
 **Example:**
 
@@ -380,21 +393,23 @@ search n/NUS
 ```
 _____________________________QUOTE______________________________
 | Company name: Default                                        |
-| Quote ID: 123                                                |
+| Quote ID: NUS06                                              |
 | Customer name: c                                             |
 |--------------------------------------------------------------|
 | Description                    | QTY |  Unit cost | Tax Rate |
 |--------------------------------------------------------------|
-| book                           |  10 | $    12.00 |   14.00 %|
+| book                           |  10 | $    12.10 |   14.00 %|
 |--------------------------------------------------------------|
 |                                                              |
-|                             Subtotal:                $120.00 |
-|                             GST:                      $16.80 |
-|                             Total:                   $136.80 |
+|                                   Subtotal:  $121.00         |
+|                                   GST:       $16.94          |
+|                                   Total:     $137.94         |
 |______________________________________________________________|
 
 Successfully found quotes containing: NUS
 ```
+
+Note: since the quote name NUS06 contains "NUS", search yielded this quote
 
 ### Show all Quotes: `show`
 
@@ -418,12 +433,12 @@ _____________________________QUOTE______________________________
 |--------------------------------------------------------------|
 | Description                    | QTY |  Unit cost | Tax Rate |
 |--------------------------------------------------------------|
-| book                           |  10 | $    12.00 |   14.00 %|
+| book                           |  10 | $    12.10 |   14.00 %|
 |--------------------------------------------------------------|
 |                                                              |
-|                             Subtotal:                $120.00 |
-|                             GST:                      $16.80 |
-|                             Total:                   $136.80 |
+|                                   Subtotal:  $121.00         |
+|                                   GST:       $16.94          |
+|                                   Total:     $137.94         |
 |______________________________________________________________|
 ```
 
@@ -449,15 +464,23 @@ Bye. Hope to see you again soon!
 
 **Q**: Will I be able to access my past quote records after exiting the program?
 
-**A**: Yes, from V2.0 onwards, every run saves a `quotely.json` file in a data subfolder. The data subfolder exists in the same directory as the `quotely.jar` file.
+**A**: Yes, from V2.0 onwards, every run saves a `quotely.json` file in a data subfolder. The data subfolder exists in
+the same directory as the `quotely.jar` file.
 
 **Q**: What happens if I accidentally deleted a quote/item? Can I retrieve that quote/item back?
 
-**A**: Unfortunately, the app is not able to restore deleted quotes or items. Therefore, we suggest that you thoroughly review any deletion commands before running them as once executed, they are permanent.
+**A**: Unfortunately, the app is not able to restore deleted quotes or items. Therefore, we suggest that you thoroughly
+review any deletion commands before running them as once executed, they are permanent.
 
 **Q**: How do I transfer my data to another computer?
 
-**A**: Feature is not available in V1.0, addition is planned for future versions.
+**A**: Copy the `.json` files in `[root]/data` to the new computer's `[root]/data`, where root is the file path where
+quotely.jar resides.
+
+**Q**: How do I show a particular quote in the terminal?
+
+**A**: Simply use the search `n/[QUOTE NAME]` function to search for the quote name. The all found quotes are
+automatically shown in the terminal.
 
 ## Command Summary
 
@@ -479,8 +502,10 @@ Bye. Hope to see you again soon!
 We are working on exciting improvements to make Quotely more powerful and flexible for your business needs!
 
 * Custom PDF Templates
-  * Soon, you’ll be able to choose from multiple PDF layouts when exporting your quotes. This will allow you to choose the appropriate PDF template for any situation.
+    * Soon, you’ll be able to choose from multiple PDF layouts when exporting your quotes. This will allow you to choose
+      the appropriate PDF template for any situation.
 * Multi-Currency Support
-  * Quotely will support different currencies. This means you can create quotes for clients anywhere in the world.
+    * Quotely will support different currencies. This means you can create quotes for clients anywhere in the world.
 * Installment Calculator
-  * Manage flexible billing for larger projects or long-term clients with ease. You will soon be able to break down totals into monthly or custom payments.
+    * Manage flexible billing for larger projects or long-term clients with ease. You will soon be able to break down
+      totals into monthly or custom payments.

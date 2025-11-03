@@ -107,7 +107,7 @@ public class Ui {
     }
 
     private void showSummaryLines(StringBuilder stringBuilder, int indent, int labelW, int amtW, Quote q) {
-        String summaryFmt = "| %" + indent + "s%-" + labelW + "s %" + amtW + "s |%n";
+        String summaryFmt = "| %" + indent + "s%-" + labelW + "s %-" + amtW + "s |%n";
         stringBuilder.append(String.format(summaryFmt, "", 
             "Subtotal:", "$" + formatAmount(q.getQuoteTotalPriceWithoutTax())));
         stringBuilder.append(String.format(summaryFmt, "", 
@@ -127,8 +127,8 @@ public class Ui {
         final int wDesc = boxInner - wQty - wUnit - wTax - 9; // 9 accounts for " | ", " | "
 
         // totals block (left margin + label + space + amount = boxInner)
-        final int amtW = 10; // width for "$xx.xx" (right aligned)
-        final int indent = 28; // left margin you want before totals
+        final int amtW = 15; // width for "$xx.xx" (right aligned)
+        final int indent = 34; // left margin you want before totals
         final int labelW = boxInner - indent - amtW - 1; // -1 for the single space before amount
 
         // reusable strings

@@ -38,7 +38,7 @@ public class CalculateTotalCommand extends Command {
 
         logger.fine("Executing CalculateTotalCommand");
         ui.showMessage(
-                String.format("Total cost of quote %s for %s: %.2f", quote.getQuoteName(),
+                String.format("Total cost of quote %s for %s: $%.2f", quote.getQuoteName(),
                         quote.getCustomerName(), quote.getQuoteTotal()));
     }
 }

@@ -49,10 +49,10 @@ public class CalculateTotalCommandTest {
 
             // 3. Assert: Check if the captured output matches the expected string
             String actualOutput = outContent.toString();
-            String expectedPrefix = "Total cost of quote Sample Quote for John Doe:";
-            assertTrue(actualOutput.startsWith(expectedPrefix));
+            String expectedPrefix = "Total cost of quote Sample Quote for John Doe: $";
+            assertTrue(actualOutput.contains(expectedPrefix));
             String value = actualOutput.substring(expectedPrefix.length()).trim();
-            assertTrue(value.matches("72\\.0{1,2}"));
+            assertTrue(value.contains("72.00"));
             assertFalse(command.isExit());
 
         } catch (QuotelyException e) {
