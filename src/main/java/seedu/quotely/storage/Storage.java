@@ -17,13 +17,25 @@ public class Storage {
 
     /**
      * Constructs a Storage object to manage data at the specified file path.
+     *
+     * @param directory The directory to store the file in (e.g., "data").
+     * @param fileName  The name of the file (e.g., "quotely.json").
      */
-    public Storage(String filePath) {
+    public Storage(String directory, String fileName) {
+        assert directory != null && !directory.trim().isEmpty() : "Directory cannot be null or empty";
+        assert fileName != null && !fileName.trim().isEmpty() : "File name cannot be null or empty";
 
-        assert filePath != null && !filePath.trim().isEmpty() : "File path cannot be null or empty";
-
-        this.filePath = Paths.get(filePath);
+        this.filePath = Paths.get(directory, fileName);
         logger.info("Storage initialized. Data file path: " + this.filePath);
+    }
+
+    /**
+     * Returns the file path of the data file.
+     *
+     * @return The Path object representing the file path.
+     */
+    public Path getDataFilePath() {
+        return this.filePath;
     }
 
     /**

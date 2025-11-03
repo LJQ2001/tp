@@ -11,13 +11,16 @@ import seedu.quotely.util.LoggerConfig;
 
 import seedu.quotely.storage.Storage;
 import seedu.quotely.storage.JsonSerializer;
+import seedu.quotely.storage.ApplicationData;
 import java.io.IOException;
 
 import java.util.logging.Logger;
 
 public class Quotely {
     private static Logger logger;
-    private static final String DEFAULT_STORAGE_FILEPATH = "data/quotely.json";
+
+    private static final String DEFAULT_STORAGE_DIRECTORY = "data";
+    private static final String DEFAULT_STORAGE_FILENAME = "quotely.json";
 
     private Ui ui;
     private CompanyName companyName;
@@ -40,41 +43,63 @@ public class Quotely {
         companyName = new CompanyName("Default");
 
         // Initialize storage and load data
-        storage = new Storage(DEFAULT_STORAGE_FILEPATH);
+        storage = new Storage(DEFAULT_STORAGE_DIRECTORY, DEFAULT_STORAGE_FILENAME);
         serializer = new JsonSerializer();
-        quoteList = loadDataFromFile();
+
+        loadDataFromFile();
+
     }
 
     /**
-     * Loads the QuoteList from the file specified in storage.
-     * If the file is not found or is corrupted, returns a new empty QuoteList.
+     * Loads the QuoteList and CompanyName from the file.
+     * If the file is not found or is corrupted, initializes with new empty data.
      */
-    private QuoteList loadDataFromFile() {
+    private void loadDataFromFile() {
         try {
             String jsonData = storage.loadData();
-            QuoteList loadedList = serializer.deserialize(jsonData);
-            logger.info("Successfully loaded data from " + DEFAULT_STORAGE_FILEPATH);
-            return loadedList;
+            // Deserialize the wrapper object
+            ApplicationData loadedData = serializer.deserialize(jsonData);
+
+            assert loadedData != null : "Deserialization should not return null";
+
+            // Set the class fields from the loaded data
+            this.quoteList = loadedData.getQuoteList();
+            this.companyName = loadedData.getCompanyName();
+
+            logger.info("Successfully loaded data from " + storage.getDataFilePath());
+
         } catch (IOException e) {
-            logger.warning("Failed to read from data file. "
-                    + "Starting with a new QuoteList. Error: " + e.getMessage());
+            logger.warning("Failed to read from data file. " +
+                    "Starting with new data. Error: " + e.getMessage());
             ui.showError("Could not load data file. Starting fresh.");
-            return new QuoteList();
+            // Initialize both fields on failure
+            this.quoteList = new QuoteList();
+            this.companyName = new CompanyName("Default");
         } catch (Exception e) { // Catches potential JSON syntax errors
-            logger.severe("Data file is corrupted. Starting with a new QuoteList. Error: " + e.getMessage());
+            logger.severe("Data file is corrupted. Starting with new data. Error: " + e.getMessage());
             ui.showError("Data file appears to be corrupted. Starting fresh.");
-            return new QuoteList();
+            // Initialize both fields on failure
+            this.quoteList = new QuoteList();
+            this.companyName = new CompanyName("Default");
         }
     }
 
     /**
-     * Saves the current QuoteList to the file specified in storage.
+     * Saves the current QuoteList and CompanyName to the file specified in storage.
      */
     private void saveDataToFile() {
+        assert quoteList != null : "Cannot save a null QuoteList";
+        assert companyName != null : "Cannot save a null CompanyName";
+        assert serializer != null : "Serializer must be initialized to save";
+
         try {
-            String jsonData = serializer.serialize(quoteList);
+            // Wrap both objects in the container
+            ApplicationData appData = new ApplicationData(quoteList, companyName);
+            // Serialize the wrapper object
+            String jsonData = serializer.serialize(appData);
+
             storage.saveData(jsonData);
-            logger.info("Data saved successfully to " + DEFAULT_STORAGE_FILEPATH);
+            logger.info("Data saved successfully to " + storage.getDataFilePath());
         } catch (IOException e) {
             logger.severe("Failed to save data to file: " + e.getMessage());
             ui.showError("Error: Failed to save data to file.");
