@@ -75,6 +75,25 @@ public class ParserQuoteCommandTest {
         assertThrows(QuotelyException.class, () -> {
             Parser.parse("quote c/Customer Name", state, quoteList);
         });
+        assertThrows(QuotelyException.class, () -> {
+            Parser.parse("quote c/CustomerLooooooooooooooooooooooooooooong", state, quoteList);
+        });
+        assertThrows(QuotelyException.class, () -> {
+            Parser.parse("quote c/Customer!@#$%%$!!!", state, quoteList);
+        });
+    }
+
+    @Test
+    public void parseAddQuoteCommand_invalidQuoteName_throwException() {
+        QuoteList quoteList = new QuoteList();
+        QuotelyState state = QuotelyState.getInstance();
+        state.setOutsideQuote();
+        assertThrows(QuotelyException.class, () -> {
+            Parser.parse("quote c/CustomerLooooooooooooooooooooooooooooong", state, quoteList);
+        });
+        assertThrows(QuotelyException.class, () -> {
+            Parser.parse("quote c/Customer!@#$%%$!!!", state, quoteList);
+        });
     }
 
     @Test

@@ -59,6 +59,12 @@ public class Parser {
     private static int MAX_COMPANYNAME_LENGTH = 46;
     private static int MAX_CUSTOMERNAME_LENGTH = 45;
 
+    //Method for validating names
+    public static boolean isValidName(String s) {
+        //check if string only contains expected char types
+        return s.matches("[A-Za-z0-9 _'&.,()\\-]+");
+    }
+
     public static Command parse(String fullCommand, QuotelyState state, QuoteList quoteList)
             throws QuotelyException {
 
@@ -139,15 +145,15 @@ public class Parser {
             String quoteName = m.group(1).trim();
             String customerName = m.group(2).trim();
 
-            //parse quote name length
-            if (quoteName.length() > MAX_QUOTENAME_LENGTH) {
-                logger.warning("Invalid quote name length for add quote command: " + arguments);
+            //validate quote name and string content
+            if (quoteName.length() > MAX_QUOTENAME_LENGTH || !isValidName(quoteName)) {
+                logger.warning("Invalid quote name for add quote command: " + arguments);
                 throw new QuotelyException(QuotelyException.ErrorType.INVALID_QUOTE_NAME);
             }
 
-            //parse customer name length
-            if (customerName.length() > MAX_CUSTOMERNAME_LENGTH) {
-                logger.warning("Invalid customer name length for add quote command: " + arguments);
+            //parse customer name length and string content
+            if (customerName.length() > MAX_CUSTOMERNAME_LENGTH || !isValidName(customerName)) {
+                logger.warning("Invalid customer name for add quote command: " + arguments);
                 throw new QuotelyException(QuotelyException.ErrorType.INVALID_CUSTOMER_NAME);
             }
 
@@ -192,7 +198,7 @@ public class Parser {
                 throw new QuotelyException(QuotelyException.ErrorType.QUOTE_NOT_FOUND, targetQuoteName);
             } else {
                 throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT,
-                    "nav main OR nav n/QUOTE_NAME");
+                        "nav main OR nav n/QUOTE_NAME");
             }
         }
     }
@@ -237,14 +243,14 @@ public class Parser {
         if (arguments.length() > 0 && !startMatcher.find()) {
             logger.warning("Invalid format for export quote command: " + arguments);
             throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT,
-                "export [n/QUOTE_NAME] [f/FILENAME]");
+                    "export [n/QUOTE_NAME] [f/FILENAME]");
         }
 
         String quoteName = null;
         if (m.find()) {
             quoteName = m.group(1).trim();
         }
-        
+
         try {
             Quote quote = getQuoteFromStateAndName(quoteName, state, quoteList);
             String filename = quote.getQuoteName();
@@ -263,7 +269,7 @@ public class Parser {
                 throw new QuotelyException(QuotelyException.ErrorType.QUOTE_NOT_FOUND, quoteName);
             } else {
                 throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT,
-                    "export [n/QUOTE_NAME] [f/FILENAME]");
+                        "export [n/QUOTE_NAME] [f/FILENAME]");
             }
         }
     }
@@ -276,9 +282,9 @@ public class Parser {
         if (m.find()) {
             String name = m.group(1).trim();
 
-            //parse company name
-            if (name.length() > MAX_COMPANYNAME_LENGTH) {
-                logger.warning("Invalid company name length for register command: " + arguments);
+            //validate company name and string content
+            if (name.length() > MAX_COMPANYNAME_LENGTH || !isValidName(name)) {
+                logger.warning("Invalid company name for register command: " + arguments);
                 throw new QuotelyException(QuotelyException.ErrorType.INVALID_COMPANY_NAME);
             }
 
@@ -300,9 +306,9 @@ public class Parser {
 
         if (m.find()) {
             String itemName = m.group(1).trim();
-            //parse item name length
-            if (itemName.length() > MAX_ITEMNAME_LENGTH) {
-                logger.warning("Invalid item name length for add item command: " + arguments);
+            //validate item name and string content
+            if (itemName.length() > MAX_ITEMNAME_LENGTH || !isValidName(itemName)) {
+                logger.warning("Invalid item name for add item command: " + arguments);
                 throw new QuotelyException(QuotelyException.ErrorType.INVALID_ITEM_NAME);
             }
             String quoteName = m.group(2) != null ? m.group(2).trim() : null;
@@ -325,7 +331,7 @@ public class Parser {
                 quote = getQuoteFromStateAndName(quoteName, state, quoteList);
 
                 //parse quote item count
-                if (quote.getItems().size() > MAX_ITEMS) {
+                if (quote.getItems().size() >= MAX_ITEMS) {
                     logger.warning("Invalid item count for quote for add item command: " + arguments);
                     throw new QuotelyException(QuotelyException.ErrorType.INVALID_ITEM_NUMBER);
                 }
@@ -360,7 +366,7 @@ public class Parser {
                 if (quantity <= 0) {
                     throw new QuotelyException(QuotelyException.ErrorType.INVALID_NUMBER_FORMAT);
                 }
-                if  (quantity > MAX_QTY) {
+                if (quantity > MAX_QTY) {
                     throw new QuotelyException(QuotelyException.ErrorType.INVALID_ITEM_QTY);
                 }
             } catch (NumberFormatException e) {
