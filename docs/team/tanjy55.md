@@ -17,6 +17,7 @@ computing totals (including tax), and exporting a printable PDF of a quote.
 - QuotelyState: Added to eliminate invalid command input situations and provide navigation Ui to user.
 - Search: Implemented `SearchQuoteCommand` to allow users to search for quotes using a keyword.
 - Data: Implemented the original data classes: CompanyName, Item, Quote, QuoteList, QuotelyState.
+- Parser: [PE-D fix] prevent invalid naming. 
 
 #### Contributions to User Guide
 
@@ -41,5 +42,6 @@ computing totals (including tax), and exporting a printable PDF of a quote.
 - Lead weekly group meeting and planned discussion topics.
 - Initiated Forum post.
 - Submission of group deliverables.
+- Sorting and merging related bugs after PE-D.
 
 <div style="page-break-after: always;"></div>
