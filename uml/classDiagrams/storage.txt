@@ -8,7 +8,11 @@ package "quotely" {
   class Quotely {
      - storage: Storage
      - serializer: JsonSerializer
+     - quoteList: QuoteList
+     - companyName: CompanyName
      + run()
+     - loadDataFromFile()
+     - saveDataToFile()
   }
 
   ' Define the 'storage' sub-package
@@ -16,24 +20,33 @@ package "quotely" {
     class Storage {
       - {static} logger: Logger
       - final filePath: Path
-      + Storage(String filePath)
+      + Storage(String directory, String fileName)
+      + getDataFilePath(): Path
       + loadData(): String
       + saveData(String data): void
     }
 
     class JsonSerializer {
+      - {static} logger: Logger
       - final gson: Gson
-      + JsonSerializer()
-      + serialize(QuoteList quoteList): String
-      + deserialize(String json): QuoteList
+      + serialize(ApplicationData appData): String
+      + deserialize(String json): ApplicationData
+    }
+
+    class ApplicationData {
+      - quoteList: QuoteList
+      - companyName: CompanyName
+      + ApplicationData()
+      + ApplicationData(QuoteList, CompanyName)
+      + getQuoteList(): QuoteList
+      + getCompanyName(): CompanyName
     }
   }
 
   ' Define the 'data' sub-package
   package "data" {
-    class QuoteList {
-      - quotes: List<Quote>
-    }
+    class QuoteList
+    class CompanyName
   }
 }
 
@@ -42,7 +55,14 @@ package "quotely" {
 Quotely "1" o-- "1" Storage
 Quotely "1" o-- "1" JsonSerializer
 
-' JsonSerializer 'uses' QuoteList (as a parameter/return type)
-JsonSerializer ..> QuoteList
+' Quotely 'uses' ApplicationData during load/save
+Quotely ..> ApplicationData : uses
+
+' JsonSerializer 'uses' ApplicationData
+JsonSerializer ..> ApplicationData : uses
+
+' ApplicationData 'has a' QuoteList and CompanyName
+ApplicationData "1" o-- "1" QuoteList
+ApplicationData "1" o-- "1" CompanyName
 
 @enduml

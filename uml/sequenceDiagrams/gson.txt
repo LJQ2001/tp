@@ -1,51 +1,78 @@
 @startuml
 actor Actor
 participant ":Quotely" as Quotely
+participant ":Storage" as Storage
+participant ":JsonSerializer" as Serializer
+participant "appData:ApplicationData" as AppData
 participant ":Parser" as Parser
 participant "cmd:Command" as Command
-participant ":JsonSerializer" as Serializer
-participant ":Storage" as Storage
 database ":data/quotely.json" as DB
 
-' 1. User issues a command that will modify data
-Actor -> Quotely ++ #Gold: quote n/Project A c/Client X
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 5
+skinparam padding 2
 
-' 2. Quotely parses the command
-Quotely -> Parser ++ #DarkSalmon: parse("quote...")
+group App Startup (Loading Data)
+    Actor -> Quotely ++: Starts Application
+    Quotely -> Quotely: new Quotely()
 
-' Parser creates the specific command object
-Parser -> Command **: new AddQuoteCommand(...)
-activate Command #Green
-return command:Command
-deactivate Parser
+    Quotely -> Quotely ++ #LightBlue: loadDataFromFile()
+    Quotely -> Storage ++ #Pink: loadData()
+    Storage -> DB: Read File
+    Storage --> Quotely: jsonString
+    deactivate Storage
 
-' 3. Quotely executes the command
-Quotely -> Command ++ #Green: execute(...)
-' (The Command modifies the QuoteList in memory)
-return
+    Quotely -> Serializer ++ #FFBBBB: deserialize(jsonString)
+    Serializer --> Quotely --: appData:ApplicationData
+    deactivate Serializer
 
-' 4. After execution, Quotely calls itself to save
-Quotely -> Quotely ++ #LightBlue: saveDataToFile()
+    Quotely -> AppData ++: getQuoteList()
+    AppData --> Quotely: quoteList
+    deactivate AppData
 
-destroy Command
+    Quotely -> AppData ++: getCompanyName()
+    AppData --> Quotely: companyName
+    deactivate AppData
 
+    deactivate Quotely
 
-' 5. Quotely asks JsonSerializer to convert the data
-Quotely -> Serializer ++ #FFBBBB: serialize(quoteList)
-' (Serializer uses Gson internally here)
-return jsonString
+    return
+end
 
-' 6. Quotely tells Storage to write the string to disk
-Quotely -> Storage ++ #LightGreen: saveData(jsonString)
-' (Storage uses java.nio.Files to write)
-Storage -> DB: Write File
-Storage --> Quotely
-deactivate Storage
+group Command Execution (Saving Data)
+    Actor -> Quotely ++ #Gold: register c/New Company
 
-' Finish the save call
-return
+    ' 1. Parse Command
+    Quotely -> Parser ++ #DarkSalmon: parse(...)
+    Parser -> Command **: new RegisterCommand(...)
+    activate Command #Green
+    Parser --> Quotely: cmd:RegisterCommand
+    deactivate Parser
 
-' Finish the user command
-return
+    ' 2. Execute Command
+    Quotely -> Command ++ #Green: execute(..., companyName, ...)
+    ' (Command modifies the companyName object in memory)
+    Command --> Quotely
+    deactivate Command
 
+    ' 3. Save Data
+    Quotely -> Quotely ++ #LightBlue: saveDataToFile()
+
+    Quotely -> AppData **: new ApplicationData(quoteList, companyName)
+    activate AppData
+
+    Quotely -> Serializer ++ #FFBBBB: serialize(appData)
+    Serializer --> Quotely: jsonString
+    deactivate Serializer
+    deactivate AppData
+
+    Quotely -> Storage ++ #Pink: saveData(jsonString)
+    Storage -> DB: Write File
+    Storage --> Quotely
+    deactivate Storage
+
+    deactivate Quotely
+
+    return
+end
 @enduml
