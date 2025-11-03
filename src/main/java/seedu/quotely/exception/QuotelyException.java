@@ -16,7 +16,15 @@ public class QuotelyException extends Exception {
         ITEM_NOT_FOUND,
         INVALID_STATE,
         EMPTY_COMMAND,
-        DUPLICATE_QUOTE_NAME
+        DUPLICATE_QUOTE_NAME,
+        INVALID_QUOTE_NAME,
+        INVALID_ITEM_NUMBER,
+        INVALID_ITEM_NAME,
+        INVALID_ITEM_PRICE,
+        INVALID_ITEM_QTY,
+        INVALID_ITEM_TAX,
+        INVALID_CUSTOMER_NAME,
+        INVALID_COMPANY_NAME
     }
 
     private final ErrorType errorType;
@@ -64,6 +72,26 @@ public class QuotelyException extends Exception {
             return "The command cannot be empty. Please enter a valid command.";
         case DUPLICATE_QUOTE_NAME:
             return "A quote with this name already exists. Please use a different name.";
+        case INVALID_QUOTE_NAME:
+            return "The quote name provided is too long. Please try again with a shorter name.";
+        case INVALID_ITEM_NUMBER:
+            return "You have reached the maximum number of items for a single quote. Delete any existing quotes" +
+                    "or try with a new quote.";
+        case INVALID_ITEM_NAME:
+            return "The item name provided is too long. Please try again with a shorter name.";
+        case INVALID_ITEM_PRICE:
+            return "The item price provided is higher than the maximum price allowed. Please try again with a smaller" +
+                    " value.";
+        case INVALID_ITEM_QTY:
+            return "The item quantity provided is higher than the maximum quantity allowed. Please try again with a " +
+                    "smaller quantity.";
+        case INVALID_ITEM_TAX:
+            return "The item tax provided is higher than the maximum tax rate allowed. Please try again with a " +
+                    "lower tax rate.";
+        case INVALID_CUSTOMER_NAME:
+            return "The customer name provided is too long. Please try again with a shorter name.";
+        case INVALID_COMPANY_NAME:
+            return "The company name provided is too long. Please try again with a shorter name.";
         default:
             return "An unknown error occurred.";
         }

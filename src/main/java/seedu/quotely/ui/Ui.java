@@ -109,11 +109,11 @@ public class Ui {
     private void showSummaryLines(StringBuilder stringBuilder, int indent, int labelW, int amtW, Quote q) {
         String summaryFmt = "| %" + indent + "s%-" + labelW + "s %-" + amtW + "s |%n";
         stringBuilder.append(String.format(summaryFmt, "", 
-            "Subtotal:", "$" + formatAmount(q.getQuoteTotalPriceWithoutTax())));
+            "Subtotal:", "$" + formatAmount(q.getQuoteTotalPriceWithoutTax()).trim()));
         stringBuilder.append(String.format(summaryFmt, "", 
-            "GST:", "$" + formatAmount(q.getQuoteTotalTax())));
+            "GST:", "$" + formatAmount(q.getQuoteTotalTax()).trim()));
         stringBuilder.append(String.format(summaryFmt, "", 
-            "Total:", "$" + formatAmount(q.getQuoteTotal())));
+            "Total:", "$" + formatAmount(q.getQuoteTotal()).trim()));
     }
 
     public void showQuote(CompanyName companyName, Quote q) {
