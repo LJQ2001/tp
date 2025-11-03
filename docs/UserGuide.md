@@ -169,7 +169,7 @@ add i/ITEM_NAME {n/QUOTE_NAME} p/PRICE q/QUANTITY {t/TAX_RATE}
   `spaces`.
 * `{n/QUOTE_NAME}` - Quote name (optional when inside a quote; if specified, item will be added to that quote instead of
   the current one)
-* The `PRICE` should be decimal, only values from 0.01 to 9999.99 are allowed.
+* The `PRICE` should be decimal, only values from 0.00 to 9999.99 are allowed.
 * The `QUANTITY` should be integer, only values from 1 to 999 are allowed
 * The `{t/TAX_RATE}` should be a positive decimal, and is set to 0.00% when not specified. Only values from 0.00 to
   200.00 are allowed.
