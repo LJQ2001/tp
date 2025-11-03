@@ -134,8 +134,20 @@ The Parser acts as the command dispatcher for all user inputs.
 * It begins by examining the first keyword in the input (e.g., add, delete, quote, register).
 * Once the command word is recognised, the Parser extracts and validates additional arguments using predefined regular expression patterns.
 * Each parsed command is then transformed into a specific Command subclass (such as AddItemCommand or NavigateCommand), with arguments passed during new Command initialisation.
+* Defines limits for arguments
+  * MAX_PRICE = 9999.99;
+  * MAX_QTY = 999;
+  * MAX_ITEMS = 30;
+  * MAX_TAX_RATE = 200.00;
+  * MAX_ITEMNAME_LENGTH = 30;
+  * MAX_QUOTENAME_LENGTH = 50;
+  * MAX_COMPANYNAME_LENGTH = 46;
+  * MAX_CUSTOMERNAME_LENGTH = 45;
 * Responsible for allowing/disallowing commands which are not valid in the current state.
   * For example, "finish" a quote is not allowed in main menu (as there is no quote being edited!)
+* Responsible for allowing/disallowing arguments
+  * For example, reject invalid names which are too long or contain invalid characters such as "!@%$^"
+  * For example, reject invalid values which are negative or above the defined limits.
 
 The class diagram of the `Parser` component is shown below:
 

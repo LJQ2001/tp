@@ -94,6 +94,12 @@ public class ParserUtilityCommandTest {
         assertThrows(QuotelyException.class, () -> {
             Parser.parse("register", state, quoteList);
         });
+        assertThrows(QuotelyException.class, () -> {
+            Parser.parse("register n/companyNameLooooooooooooooooooooooong", state, quoteList);
+        });
+        assertThrows(QuotelyException.class, () -> {
+            Parser.parse("register n/!@#$%^&!!!!", state, quoteList);
+        });
     }
 
     @Test

@@ -49,7 +49,10 @@ Refer to Features below to see more details on using the Quotely application!
 
 Register your company name. This is the name of your company billing the customer.
 
-Command is available in both main menu and during quotation.
+* Command is available in both main menu and during quotation.
+* Company Name limited to a maximum of 46 characters.
+* Company Name can only contain alphabets, numbers, and the characters: `_'&.,()\-+` and
+  `spaces`.
 
 **Format:**
 
@@ -87,7 +90,9 @@ quote n/QUOTE_NAME c/CUSTOMER_NAME
 
 * The `QUOTE_NAME` and `CUSTOMER_NAME` can be in a natural language format.
 * `QUOTE_NAME` is limited to a maximum of 50 characters.
-* `CUSTOMER_NAME` is limited to a maximum of 46 characters.
+* `CUSTOMER_NAME` is limited to a maximum of 45 characters.
+* Both `QUOTE_NAME` and `CUSTOMER_NAME` can only contain alphabets, numbers, and the characters: `_'&.,()\-+` and
+  `spaces`.
 * A maximum of 30 items can be added per quote.
 
 **Example:**
@@ -159,9 +164,12 @@ add i/ITEM_NAME {n/QUOTE_NAME} p/PRICE q/QUANTITY {t/TAX_RATE}
 ```
 
 * The `ITEM_NAME` and `QUOTE_NAME` can be in a natural language format.
+* `ITEM_NAME` is limited to a maximum of 30 characters.
+* `ITEM_NAME` can only contain alphabets, numbers, and the characters: `_'&.,()\-+` and
+  `spaces`.
 * `{n/QUOTE_NAME}` - Quote name (optional when inside a quote; if specified, item will be added to that quote instead of
   the current one)
-* The `PRICE` should be decimal, only values from 0.01 to 9999.99 are allowed.
+* The `PRICE` should be decimal, only values from 0.00 to 9999.99 are allowed.
 * The `QUANTITY` should be integer, only values from 1 to 999 are allowed
 * The `{t/TAX_RATE}` should be a positive decimal, and is set to 0.00% when not specified. Only values from 0.00 to
   200.00 are allowed.
@@ -510,4 +518,4 @@ We are working on exciting improvements to make Quotely more powerful and flexib
     * Manage flexible billing for larger projects or long-term clients with ease. You will soon be able to break down
       totals into monthly or custom payments.
 * Edit Items
-  * Soon, you’ll be able to edit and delete specified Items in the quote.
+    * Soon, you’ll be able to edit and delete specified Items in the quote.

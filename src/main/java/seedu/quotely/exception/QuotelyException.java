@@ -63,7 +63,7 @@ public class QuotelyException extends Exception {
         case NO_ACTIVE_QUOTE:
             return "There is no active quote. Please navigate to a quote or specify one in the commands.";
         case QUOTE_NOT_FOUND:
-            return "The specified quote (" + message +  ") was not found.";
+            return "The specified quote (" + message + ") was not found.";
         case ITEM_NOT_FOUND:
             return "The specified item was not found in the quote.";
         case INVALID_STATE:
@@ -73,12 +73,12 @@ public class QuotelyException extends Exception {
         case DUPLICATE_QUOTE_NAME:
             return "A quote with this name already exists. Please use a different name.";
         case INVALID_QUOTE_NAME:
-            return "The quote name provided is too long. Please try again with a shorter name.";
+            return "The quote name provided is too long or contains invalid characters. Please try again.";
         case INVALID_ITEM_NUMBER:
             return "You have reached the maximum number of items for a single quote. Delete any existing quotes" +
                     "or try with a new quote.";
         case INVALID_ITEM_NAME:
-            return "The item name provided is too long. Please try again with a shorter name.";
+            return "The item name provided is too long or contains invalid characters. Please try again.";
         case INVALID_ITEM_PRICE:
             return "The item price provided is higher than the maximum price allowed. Please try again with a smaller" +
                     " value.";
@@ -89,9 +89,9 @@ public class QuotelyException extends Exception {
             return "The item tax provided is higher than the maximum tax rate allowed. Please try again with a " +
                     "lower tax rate.";
         case INVALID_CUSTOMER_NAME:
-            return "The customer name provided is too long. Please try again with a shorter name.";
+            return "The customer name provided is too long or contains invalid characters. Please try again.";
         case INVALID_COMPANY_NAME:
-            return "The company name provided is too long. Please try again with a shorter name.";
+            return "The company name provided is too long or contains invalid characters. Please try again.";
         default:
             return "An unknown error occurred.";
         }
