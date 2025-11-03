@@ -329,13 +329,6 @@ public class Parser {
             // extract quote from quoteName or state
             try {
                 quote = getQuoteFromStateAndName(quoteName, state, quoteList);
-
-                //parse quote item count
-                if (quote.getItems().size() >= MAX_ITEMS) {
-                    logger.warning("Invalid item count for quote for add item command: " + arguments);
-                    throw new QuotelyException(QuotelyException.ErrorType.INVALID_ITEM_NUMBER);
-                }
-
             } catch (QuotelyException e) {
                 logger.warning("Failed to find quote name:" + quoteName + " for adding item");
                 if (quoteName != null) {
@@ -344,6 +337,12 @@ public class Parser {
                     throw new QuotelyException(QuotelyException.ErrorType.WRONG_COMMAND_FORMAT,
                             "add i/ITEM_NAME [n/QUOTE_NAME] p/PRICE q/QUANTITY [t/TAX_RATE]");
                 }
+            }
+
+            //parse quote item count
+            if (quote.getItems().size() >= MAX_ITEMS) {
+                logger.warning("Invalid item count for quote for add item command: " + arguments);
+                throw new QuotelyException(QuotelyException.ErrorType.INVALID_ITEM_NUMBER);
             }
 
             // parse price
